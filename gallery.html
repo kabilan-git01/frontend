@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Meta Tags -->
+  <title>Interior Gallery | Titan Fitness Gym</title>
+  <meta name="description" content="Take a visual tour of Titan Fitness Gym's premium athletic spaces, strength equipment rows, boxing rings, and yoga studios.">
+  <meta name="keywords" content="Gym Photos, Gym Gallery, Gym Interior, Titan Fitness Spaces, Workout Photos">
+  <meta name="author" content="Titan Fitness Gym">
+  
+  <link rel="icon" type="image/png" href="https://img.icons8.com/ios-filled/50/ff003c/dumbbells.png">
+
+  <!-- Google Fonts Preconnect & CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- FontAwesome CDN for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Scroll Progress Indicator -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- ==========================================
+     HEADER & NAVIGATION
+     ========================================== -->
+  <header id="mainHeader">
+    <div class="container navbar">
+      <a href="index.html" class="logo" id="logoLink">
+        <i class="fa-solid fa-dumbbell"></i> TITAN <span>FITNESS</span>
+      </a>
+      
+      <nav aria-label="Main Navigation">
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="about.html" class="nav-link">About</a></li>
+          <li><a href="programs.html" class="nav-link">Programs</a></li>
+          <li><a href="trainers.html" class="nav-link">Trainers</a></li>
+          <li><a href="pricing.html" class="nav-link">Pricing</a></li>
+          <li><a href="gallery.html" class="nav-link active">Gallery</a></li>
+          <li><a href="contact.html" class="nav-link">Contact</a></li>
+          <li><a href="pricing.html" class="btn btn-primary btn-sm" id="navCTA">Join Now</a></li>
+        </ul>
+      </nav>
+      
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle Navigation Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================
+     PAGE HEADER BANNER
+     ========================================== -->
+  <section class="page-header" style="background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.95)), url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1920&auto=format&fit=crop');">
+    <div class="container">
+      <h1 class="reveal"><span class="text-gradient">GYM GALLERY</span></h1>
+      <div class="page-breadcrumbs reveal delay-100">
+        <a href="index.html">Home</a> <span>/</span> <span>Gallery</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+     IMAGE GALLERY SECTION
+     ========================================== -->
+  <section class="gallery">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-subtitle">Visual Tour</span>
+        <h2 class="section-title">OUR FACILITIES</h2>
+      </div>
+      
+      <div class="gallery-grid" id="galleryGrid" style="margin-top: 50px;">
+        <!-- Item 1 -->
+        <div class="gallery-item reveal" data-index="0">
+          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=600&auto=format&fit=crop" alt="Dumbbells on Gym Rack">
+          <div class="gallery-overlay">
+            <div class="gallery-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+        </div>
+        <!-- Item 2 -->
+        <div class="gallery-item reveal delay-100" data-index="1">
+          <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=600&auto=format&fit=crop" alt="Lifting Heavy Barbell">
+          <div class="gallery-overlay">
+            <div class="gallery-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+        </div>
+        <!-- Item 3 -->
+        <div class="gallery-item reveal delay-200" data-index="2">
+          <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=600&auto=format&fit=crop" alt="Abs Core Training Work">
+          <div class="gallery-overlay">
+            <div class="gallery-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+        </div>
+        <!-- Item 4 -->
+        <div class="gallery-item reveal delay-300" data-index="3">
+          <img src="https://images.unsplash.com/photo-1593079831268-3381b0db4a77?q=80&w=600&auto=format&fit=crop" alt="Gym Treadmills and Equipment">
+          <div class="gallery-overlay">
+            <div class="gallery-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+        </div>
+        <!-- Item 5 -->
+        <div class="gallery-item reveal" data-index="4">
+          <img src="https://images.unsplash.com/photo-1518310383802-640c2de311b2?q=80&w=600&auto=format&fit=crop" alt="Boxing Training Bag Area">
+          <div class="gallery-overlay">
+            <div class="gallery-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+        </div>
+        <!-- Item 6 -->
+        <div class="gallery-item reveal delay-100" data-index="5">
+          <img src="https://images.unsplash.com/photo-1574680096145-d05b474e2155?q=80&w=600&auto=format&fit=crop" alt="Weight Machines Row">
+          <div class="gallery-overlay">
+            <div class="gallery-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+        </div>
+        <!-- Item 7 -->
+        <div class="gallery-item reveal delay-200" data-index="6">
+          <img src="https://images.unsplash.com/photo-1550259979-ed79b48d2a30?q=80&w=600&auto=format&fit=crop" alt="Group Yoga Exercises">
+          <div class="gallery-overlay">
+            <div class="gallery-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+        </div>
+        <!-- Item 8 -->
+        <div class="gallery-item reveal delay-300" data-index="7">
+          <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=600&auto=format&fit=crop" alt="Bodybuilder Squats">
+          <div class="gallery-overlay">
+            <div class="gallery-icon"><i class="fa-solid fa-plus"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+     LIGHTBOX COMPONENT (MODAL OVERLAY)
+     ========================================== -->
+  <div class="lightbox" id="lightboxModal" role="dialog" aria-modal="true" aria-label="Image Lightbox">
+    <div class="lightbox-content">
+      <span class="lightbox-close" id="lightboxCloseBtn">&times;</span>
+      <span class="lightbox-nav lightbox-prev" id="lightboxPrevBtn"><i class="fa-solid fa-chevron-left"></i></span>
+      <img src="" alt="Enlarged Gym Photo" id="lightboxImg">
+      <span class="lightbox-nav lightbox-next" id="lightboxNextBtn"><i class="fa-solid fa-chevron-right"></i></span>
+    </div>
+  </div>
+
+  <!-- ==========================================
+     FOOTER SECTION
+     ========================================== -->
+  <footer>
+    <div class="container footer-grid">
+      <!-- About -->
+      <div class="footer-col footer-about">
+        <a href="index.html" class="logo" style="margin-bottom: 20px;">
+          <i class="fa-solid fa-dumbbell"></i> TITAN <span>FITNESS</span>
+        </a>
+        <p>
+          Engineered for excellence. We offer a high-intensity atmospheric space, premium gym equipment, and world-class physical trainers to help you exceed limit barriers.
+        </p>
+      </div>
+      
+      <!-- Quick Links -->
+      <div class="footer-col">
+        <h3>Sitemap</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">Home Base</a></li>
+          <li><a href="about.html">Our Story</a></li>
+          <li><a href="programs.html">Training Classes</a></li>
+          <li><a href="trainers.html">Expert Coaches</a></li>
+          <li><a href="pricing.html">Pricing Plans</a></li>
+          <li><a href="gallery.html">Interior Gallery</a></li>
+        </ul>
+      </div>
+      
+      <!-- Gym Working Hours -->
+      <div class="footer-col">
+        <h3>Gym Hours</h3>
+        <ul class="footer-hours">
+          <li><span>Monday - Friday</span> <span>05:00 - 23:00</span></li>
+          <li><span>Saturday</span> <span>06:00 - 21:00</span></li>
+          <li><span>Sunday</span> <span>08:00 - 18:00</span></li>
+          <li><span>Sauna Access</span> <span>24 Hours Daily</span></li>
+        </ul>
+      </div>
+      
+      <!-- Newsletter Signup -->
+      <div class="footer-col footer-newsletter">
+        <h3>Newsletter</h3>
+        <p>Subscribe to receive special discount alerts, nutritional tips, and class updates.</p>
+        <form class="newsletter-form" id="newsletterForm">
+          <input type="email" class="form-control" placeholder="Your Email Address" required aria-label="Newsletter Email Input">
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+        <div id="newsletterFeedback" style="font-size: 0.85rem; margin-top: 10px; display: none;"></div>
+      </div>
+    </div>
+    
+    <!-- Footer bottom -->
+    <div class="container footer-bottom">
+      <p>&copy; 2026 Titan Fitness Gym. All rights reserved. engineered with absolute grit.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Facility Policy</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll-to-top Button -->
+  <button class="scroll-to-top" id="scrollTopBtn" aria-label="Scroll back to top of the page">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <!-- MAIN SCRIPT FILE -->
+  <script src="js/script.js"></script>
+</body>
+</html>

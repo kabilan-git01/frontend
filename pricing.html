@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Meta Tags -->
+  <title>Membership Pricing | Titan Fitness Gym</title>
+  <meta name="description" content="View Titan Fitness Gym's membership pricing plans. Switch between monthly and annual options and compare our Basic, Elite, and VIP packages.">
+  <meta name="keywords" content="Gym Pricing, Gym Membership, Gym Cost, Titan Fitness Plans, Cheap Gym Membership">
+  <meta name="author" content="Titan Fitness Gym">
+  
+  <link rel="icon" type="image/png" href="https://img.icons8.com/ios-filled/50/ff003c/dumbbells.png">
+
+  <!-- Google Fonts Preconnect & CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- FontAwesome CDN for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Scroll Progress Indicator -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- ==========================================
+     HEADER & NAVIGATION
+     ========================================== -->
+  <header id="mainHeader">
+    <div class="container navbar">
+      <a href="index.html" class="logo" id="logoLink">
+        <i class="fa-solid fa-dumbbell"></i> TITAN <span>FITNESS</span>
+      </a>
+      
+      <nav aria-label="Main Navigation">
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="about.html" class="nav-link">About</a></li>
+          <li><a href="programs.html" class="nav-link">Programs</a></li>
+          <li><a href="trainers.html" class="nav-link">Trainers</a></li>
+          <li><a href="pricing.html" class="nav-link active">Pricing</a></li>
+          <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+          <li><a href="contact.html" class="nav-link">Contact</a></li>
+          <li><a href="pricing.html" class="btn btn-primary btn-sm" id="navCTA">Join Now</a></li>
+        </ul>
+      </nav>
+      
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle Navigation Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================
+     PAGE HEADER BANNER
+     ========================================== -->
+  <section class="page-header" style="background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.95)), url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1920&auto=format&fit=crop');">
+    <div class="container">
+      <h1 class="reveal"><span class="text-gradient">MEMBERSHIP PLANS</span></h1>
+      <div class="page-breadcrumbs reveal delay-100">
+        <a href="index.html">Home</a> <span>/</span> <span>Pricing</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+     MEMBERSHIP PRICING SECTION
+     ========================================== -->
+  <section class="pricing">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-subtitle">Affordable Subscriptions</span>
+        <h2 class="section-title">CHOOSE YOUR PATH</h2>
+      </div>
+      
+      <!-- Billing Switch Toggle -->
+      <div class="pricing-toggle-wrapper reveal">
+        <span class="pricing-toggle-label active" id="monthlyLabel">Monthly</span>
+        <label class="toggle-switch" for="billingToggle">
+          <input type="checkbox" id="billingToggle">
+          <span class="slider-round"></span>
+        </label>
+        <span class="pricing-toggle-label" id="annualLabel">Annually <span style="font-size: 0.75rem; color: var(--accent);">(-20%)</span></span>
+      </div>
+      
+      <div class="pricing-grid">
+        <!-- Basic Plan -->
+        <div class="pricing-card reveal" id="priceCard1">
+          <div class="pricing-header">
+            <h3>Basic Plan</h3>
+            <div class="pricing-price" id="basicPrice" data-monthly="29" data-annual="278">$29<span>/mo</span></div>
+          </div>
+          <ul class="pricing-features">
+            <li><i class="fa-solid fa-check-circle"></i> Access to Gym Floor & Cardio</li>
+            <li><i class="fa-solid fa-check-circle"></i> Standard Lockers & Showers</li>
+            <li><i class="fa-solid fa-check-circle"></i> 1 Free Physical Evaluation</li>
+            <li class="disabled"><i class="fa-solid fa-times-circle"></i> Access to Group Classes</li>
+            <li class="disabled"><i class="fa-solid fa-times-circle"></i> 1-on-1 Personal Trainer</li>
+            <li class="disabled"><i class="fa-solid fa-times-circle"></i> Free Customized Nutrition Plan</li>
+          </ul>
+          <a href="contact.html?plan=basic" class="btn btn-glass" id="priceBtn1">Choose Plan</a>
+        </div>
+        
+        <!-- Elite Plan (Popular) -->
+        <div class="pricing-card popular reveal delay-100" id="priceCard2">
+          <div class="pricing-header">
+            <h3>Elite Plan</h3>
+            <div class="pricing-price" id="elitePrice" data-monthly="59" data-annual="566">$59<span>/mo</span></div>
+          </div>
+          <ul class="pricing-features">
+            <li><i class="fa-solid fa-check-circle"></i> Unlimited Gym & Cardio Access</li>
+            <li><i class="fa-solid fa-check-circle"></i> VIP Lockers & Sauna Access</li>
+            <li><i class="fa-solid fa-check-circle"></i> Monthly Physical Evaluations</li>
+            <li><i class="fa-solid fa-check-circle"></i> Full Access to Group Classes</li>
+            <li><i class="fa-solid fa-check-circle"></i> 2 Personal Coaching Sessions/mo</li>
+            <li class="disabled"><i class="fa-solid fa-times-circle"></i> Custom Meal Plans Weekly</li>
+          </ul>
+          <a href="contact.html?plan=elite" class="btn btn-primary" id="priceBtn2">Choose Plan</a>
+        </div>
+        
+        <!-- VIP Plan -->
+        <div class="pricing-card reveal delay-200" id="priceCard3">
+          <div class="pricing-header">
+            <h3>VIP Plan</h3>
+            <div class="pricing-price" id="vipPrice" data-monthly="99" data-annual="950">$99<span>/mo</span></div>
+          </div>
+          <ul class="pricing-features">
+            <li><i class="fa-solid fa-check-circle"></i> 24/7 Gym Floor & Group Access</li>
+            <li><i class="fa-solid fa-check-circle"></i> Private Locker, Sauna & Ice Bath</li>
+            <li><i class="fa-solid fa-check-circle"></i> Bi-Weekly Body Composition Scans</li>
+            <li><i class="fa-solid fa-check-circle"></i> Unlimited Group Classes</li>
+            <li><i class="fa-solid fa-check-circle"></i> Full Dedicated 1-on-1 Personal Coach</li>
+            <li><i class="fa-solid fa-check-circle"></i> Custom Dynamic Diet Strategies</li>
+          </ul>
+          <a href="contact.html?plan=vip" class="btn btn-glass" id="priceBtn3">Choose Plan</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+     PLAN COMPARISON MATRIX
+     ========================================== -->
+  <section class="pricing-comparison">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-subtitle">Side-by-side</span>
+        <h2 class="section-title">PLAN COMPARISON</h2>
+      </div>
+      
+      <div class="comparison-table-wrapper reveal" style="margin-top: 50px;">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Features & Benefits</th>
+              <th>Basic</th>
+              <th>Elite</th>
+              <th>VIP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Gym Floor & Strength Equipment Access</td>
+              <td>Standard Hours</td>
+              <td>Unlimited Hours</td>
+              <td>24/7 Access</td>
+            </tr>
+            <tr>
+              <td>Cardio Section Access (Treadmills, rowers)</td>
+              <td><i class="fa-solid fa-check"></i></td>
+              <td><i class="fa-solid fa-check"></i></td>
+              <td><i class="fa-solid fa-check"></i></td>
+            </tr>
+            <tr>
+              <td>Locker, Shower & Changing Rooms</td>
+              <td>Standard Lockers</td>
+              <td>VIP Lockers + Sauna</td>
+              <td>Private + Ice Bath</td>
+            </tr>
+            <tr>
+              <td>Full Access to Group Classes</td>
+              <td><i class="fa-solid fa-xmark"></i></td>
+              <td><i class="fa-solid fa-check"></i></td>
+              <td><i class="fa-solid fa-check"></i></td>
+            </tr>
+            <tr>
+              <td>1-on-1 Personal Coaching Session</td>
+              <td>1 Evaluation Free</td>
+              <td>2 Sessions / Month</td>
+              <td>Unlimited Support</td>
+            </tr>
+            <tr>
+              <td>Custom Weekly Meal Plans</td>
+              <td><i class="fa-solid fa-xmark"></i></td>
+              <td><i class="fa-solid fa-xmark"></i></td>
+              <td><i class="fa-solid fa-check"></i></td>
+            </tr>
+            <tr>
+              <td>Hormonal & Body Comp Evaluation Scans</td>
+              <td><i class="fa-solid fa-xmark"></i></td>
+              <td>Monthly</td>
+              <td>Bi-Weekly</td>
+            </tr>
+            <tr>
+              <td>Guest Pass Access</td>
+              <td><i class="fa-solid fa-xmark"></i></td>
+              <td>1 Pass / Month</td>
+              <td>5 Passes / Month</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+     PRICING FAQS SECTION
+     ========================================== -->
+  <section class="pricing-faq">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-subtitle">Common Questions</span>
+        <h2 class="section-title">MEMBERSHIP FAQS</h2>
+      </div>
+      
+      <div class="faq-grid">
+        <div class="faq-item reveal-left">
+          <h3>Is there a registration signup fee?</h3>
+          <p>
+            No, we do not believe in administrative signup hidden charges. Your selected subscription pricing is exactly what you pay to activate your card.
+          </p>
+        </div>
+        <div class="faq-item reveal-right">
+          <h3>Can I pause my subscription plans?</h3>
+          <p>
+            Yes. Elite members can pause memberships once per year for up to 30 days. VIP members enjoy unlimited account freezes up to 90 days annually.
+          </p>
+        </div>
+        <div class="faq-item reveal-left">
+          <h3>How do I book 1-on-1 personal coaches?</h3>
+          <p>
+            Once you sign up for the Elite or VIP tiers, you can pair up with a coach via our reception counter or by emailing booking@titanfitnessgym.com.
+          </p>
+        </div>
+        <div class="faq-item reveal-right">
+          <h3>Do you offer trial access passes?</h3>
+          <p>
+            Yes! We offer a one-day all-access trial pass for local residents. You can register for a trial on our Contact Page or by visiting our front desk.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+     FOOTER SECTION
+     ========================================== -->
+  <footer>
+    <div class="container footer-grid">
+      <!-- About -->
+      <div class="footer-col footer-about">
+        <a href="index.html" class="logo" style="margin-bottom: 20px;">
+          <i class="fa-solid fa-dumbbell"></i> TITAN <span>FITNESS</span>
+        </a>
+        <p>
+          Engineered for excellence. We offer a high-intensity atmospheric space, premium gym equipment, and world-class physical trainers to help you exceed limit barriers.
+        </p>
+      </div>
+      
+      <!-- Quick Links -->
+      <div class="footer-col">
+        <h3>Sitemap</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">Home Base</a></li>
+          <li><a href="about.html">Our Story</a></li>
+          <li><a href="programs.html">Training Classes</a></li>
+          <li><a href="trainers.html">Expert Coaches</a></li>
+          <li><a href="pricing.html">Pricing Plans</a></li>
+          <li><a href="gallery.html">Interior Gallery</a></li>
+        </ul>
+      </div>
+      
+      <!-- Gym Working Hours -->
+      <div class="footer-col">
+        <h3>Gym Hours</h3>
+        <ul class="footer-hours">
+          <li><span>Monday - Friday</span> <span>05:00 - 23:00</span></li>
+          <li><span>Saturday</span> <span>06:00 - 21:00</span></li>
+          <li><span>Sunday</span> <span>08:00 - 18:00</span></li>
+          <li><span>Sauna Access</span> <span>24 Hours Daily</span></li>
+        </ul>
+      </div>
+      
+      <!-- Newsletter Signup -->
+      <div class="footer-col footer-newsletter">
+        <h3>Newsletter</h3>
+        <p>Subscribe to receive special discount alerts, nutritional tips, and class updates.</p>
+        <form class="newsletter-form" id="newsletterForm">
+          <input type="email" class="form-control" placeholder="Your Email Address" required aria-label="Newsletter Email Input">
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+        <div id="newsletterFeedback" style="font-size: 0.85rem; margin-top: 10px; display: none;"></div>
+      </div>
+    </div>
+    
+    <!-- Footer bottom -->
+    <div class="container footer-bottom">
+      <p>&copy; 2026 Titan Fitness Gym. All rights reserved. engineered with absolute grit.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Facility Policy</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll-to-top Button -->
+  <button class="scroll-to-top" id="scrollTopBtn" aria-label="Scroll back to top of the page">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <!-- MAIN SCRIPT FILE -->
+  <script src="js/script.js"></script>
+</body>
+</html>
