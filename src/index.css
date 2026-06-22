@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply bg-titan-black text-white font-body antialiased overflow-x-hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading uppercase tracking-wide;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(12, 12, 12, 0.5);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ff003c 0%, rgba(255, 77, 0, 0.6) 100%);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #d60032 0%, #ff4d00 100%);
+  }
+}
+
+@layer components {
+  .container-titan {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .text-gradient {
+    @apply bg-accent-gradient bg-clip-text text-transparent;
+  }
+
+  .glass-card {
+    @apply bg-titan-card/70 backdrop-blur-md border border-white/5 rounded-2xl;
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300 hover:border-titan-red/30 hover:shadow-glow hover:-translate-y-1;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent-gradient text-white font-semibold uppercase tracking-wider text-sm rounded-lg transition-all duration-300 hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 border border-white/20 text-white font-semibold uppercase tracking-wider text-sm rounded-lg transition-all duration-300 hover:border-titan-red hover:text-titan-red hover:-translate-y-0.5;
+  }
+
+  .btn-glass {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 glass-card text-white font-semibold uppercase tracking-wider text-sm transition-all duration-300 hover:border-titan-red/50 hover:shadow-glow;
+  }
+
+  .section-padding {
+    @apply py-16 md:py-24 lg:py-28;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 bg-titan-dark border border-white/10 rounded-lg text-white placeholder-titan-muted focus:border-titan-red focus:ring-1 focus:ring-titan-red outline-none transition-colors;
+  }
+
+  .reveal {
+    @apply opacity-0 translate-y-8 transition-all duration-700;
+  }
+
+  .reveal.active {
+    @apply opacity-100 translate-y-0;
+  }
+}
+
+@layer utilities {
+  .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-300 { animation-delay: 300ms; }
+}
