@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import AdminLayout from './components/admin/AdminLayout';
@@ -25,7 +26,18 @@ import AdminMembers from './pages/admin/AdminMembers';
 import AdminReviews from './pages/admin/AdminReviews';
 import AdminEnquiries from './pages/admin/AdminEnquiries';
 
+import supabase from './supabaseClient.js';
+
 export default function App() {
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { data, error } = await supabase.from('products').select('*');
+      console.log('Data:', data);
+      console.log('Error:', error);
+    };
+    fetchProducts();
+  }, []);
+
   return (
     <Routes>
       <Route element={<Layout />}>

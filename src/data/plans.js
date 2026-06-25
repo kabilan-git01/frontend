@@ -16,7 +16,7 @@ export const membershipPlans = [
     pricing: {
       monthly: 29,
       quarterly: 79,
-      yearly: 278,
+      yearly: 278,                                                                                                      
     },
     popular: false,
   },
