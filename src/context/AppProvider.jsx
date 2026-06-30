@@ -89,7 +89,7 @@ export function AppProvider({ children }) {
       } catch (e) { console.error('Error fetching programs:', e); }
 
       try {
-        const { data: plData, error: plErr } = await supabase.from('plans').select('*');
+        const { data: plData, error: plErr } = await supabase.from('membership_plans').select('*');
         if (!plErr && plData && plData.length > 0) setPlans(plData);
       } catch (e) { console.error('Error fetching plans:', e); }
 
@@ -104,12 +104,12 @@ export function AppProvider({ children }) {
       } catch (e) { console.error('Error fetching reviews:', e); }
 
       try {
-        const { data: gData, error: gErr } = await supabase.from('gallery_images').select('*');
+        const { data: gData, error: gErr } = await supabase.from('gallery').select('*');
         if (!gErr && gData && gData.length > 0) setGallery(gData);
       } catch (e) { console.error('Error fetching gallery_images:', e); }
 
       try {
-        const { data: eData, error: eErr } = await supabase.from('enquiries').select('*');
+        const { data: eData, error: eErr } = await supabase.from('contact_enquiries').select('*');
         if (!eErr && eData && eData.length > 0) setEnquiries(eData);
       } catch (e) { console.error('Error fetching enquiries:', e); }
 
@@ -258,7 +258,7 @@ export function AppProvider({ children }) {
     const newEnquiry = { ...enquiry, id: generateId(), date: new Date().toISOString().split('T')[0], status: 'new' };
     setEnquiries((prev) => [newEnquiry, ...prev]);
     try {
-      await supabase.from('enquiries').insert(newEnquiry);
+      await supabase.from('contact_enquiries').insert(newEnquiry);
     } catch (e) {
       console.error('Error inserting enquiry to Supabase:', e);
     }
@@ -267,7 +267,7 @@ export function AppProvider({ children }) {
   const updateEnquiryStatus = useCallback(async (id, status) => {
     setEnquiries((prev) => prev.map((e) => (e.id === id ? { ...e, status } : e)));
     try {
-      await supabase.from('enquiries').update({ status }).eq('id', id);
+      await supabase.from('contact_enquiries').update({ status }).eq('id', id);
     } catch (e) {
       console.error('Error updating enquiry status in Supabase:', e);
     }
@@ -314,7 +314,7 @@ export function AppProvider({ children }) {
   const updatePlan = useCallback(async (id, updates) => {
     setPlans((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
     try {
-      await supabase.from('plans').update(updates).eq('id', id);
+      await supabase.from('membership_plans').update(updates).eq('id', id);
     } catch (e) {
       console.error('Error updating plan in Supabase:', e);
     }
