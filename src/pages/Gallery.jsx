@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { PageHeader } from '../components/ui/SectionHeader';
-import { galleryImages } from '../data/testimonials';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import { useApp } from '../context/AppProvider';
 
 export default function Gallery() {
   const [selected, setSelected] = useState(null);
   const revealRef = useScrollReveal();
+  const { gallery } = useApp();
 
   return (
     <div ref={revealRef}>
@@ -14,7 +15,7 @@ export default function Gallery() {
       <section className="section-padding">
         <div className="container-titan">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {galleryImages.map((img, i) => (
+            {gallery.map((img, i) => (
               <button
                 key={img.id}
                 onClick={() => setSelected(img)}

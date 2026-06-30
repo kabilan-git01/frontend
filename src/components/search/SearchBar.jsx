@@ -1,8 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDebounce } from '../../hooks/useDebounce';
-import { programs } from '../../data/programs';
-import { trainers } from '../../data/trainers';
 import { useApp } from '../../context/AppProvider';
 
 const categories = ['All', 'Programs', 'Trainers', 'Plans'];
@@ -12,7 +10,7 @@ export default function SearchBar({ onClose, autoFocus = true }) {
   const [category, setCategory] = useState('All');
   const debouncedQuery = useDebounce(query, 250);
   const navigate = useNavigate();
-  const { plans } = useApp();
+  const { plans, programs, trainers } = useApp();
 
   const results = useMemo(() => {
     if (!debouncedQuery.trim()) return [];
@@ -45,7 +43,7 @@ export default function SearchBar({ onClose, autoFocus = true }) {
     }
 
     return items.slice(0, 8);
-  }, [debouncedQuery, category, plans]);
+  }, [debouncedQuery, category, plans, programs, trainers]);
 
   const handleSelect = (link) => {
     navigate(link);

@@ -1,10 +1,11 @@
 import { useParams, Link } from 'react-router-dom';
 import { PageHeader, EmptyState } from '../components/ui/SectionHeader';
 import Button from '../components/ui/Button';
-import { programs } from '../data/programs';
+import { useApp } from '../context/AppProvider';
 
 export default function ProgramDetail() {
   const { slug } = useParams();
+  const { programs } = useApp();
   const program = programs.find((p) => p.slug === slug);
 
   if (!program) {

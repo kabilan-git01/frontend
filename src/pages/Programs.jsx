@@ -3,7 +3,6 @@ import { PageHeader } from '../components/ui/SectionHeader';
 import Button, { WishlistButton } from '../components/ui/Button';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { useApp } from '../context/AppProvider';
-import { programs } from '../data/programs';
 import { formatCurrency } from '../utils/helpers';
 
 const categories = ['All', 'Strength Training', 'Cardio', 'CrossFit', 'Weight Loss', 'Personal Training'];
@@ -11,7 +10,7 @@ const categories = ['All', 'Strength Training', 'Cardio', 'CrossFit', 'Weight Lo
 export default function Programs() {
   const [category, setCategory] = useState('All');
   const revealRef = useScrollReveal();
-  const { addToCart } = useApp();
+  const { programs, addToCart } = useApp();
 
   const filtered = category === 'All'
     ? programs

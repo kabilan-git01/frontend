@@ -3,19 +3,12 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 import SectionHeader from '../components/ui/SectionHeader';
 import Button from '../components/ui/Button';
 import ProgramCard, { TestimonialSlider } from '../components/shared/Cards';
-import { programs } from '../data/programs';
-import { testimonials } from '../data/testimonials';
-
-const features = [
-  { icon: 'fa-dumbbell', title: 'Elite Equipment', desc: 'Industry-leading hammer strength plate loaders, competition-grade barbells, and customized squat cells.' },
-  { icon: 'fa-user-shield', title: 'Expert Coaching', desc: 'Fully certified trainers with specialty designations in corrective biomechanics and sports nutrition.' },
-  { icon: 'fa-clock', title: '24/7 Facility Access', desc: 'Keycard entry system provides Elite and VIP members with full-facility access around the clock.' },
-  { icon: 'fa-apple-whole', title: 'Diet Strategies', desc: 'Direct nutritional support, custom macros allocations, and daily accountability checks.' },
-];
+import { useApp } from '../context/AppProvider';
 
 export default function Home() {
   const revealRef = useScrollReveal();
-  const featuredTestimonials = testimonials.filter((t) => t.featured && t.type === 'testimonial');
+  const { programs, reviews, homeFeatures } = useApp();
+  const featuredTestimonials = reviews.filter((t) => t.featured && t.type === 'testimonial');
 
   return (
     <div ref={revealRef}>
@@ -44,7 +37,7 @@ export default function Home() {
         <div className="container-titan">
           <SectionHeader subtitle="Why Titan Gym" title="Engineered For Strength" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((f, i) => (
+            {homeFeatures.map((f, i) => (
               <div key={f.title} className={`glass-card-hover p-6 text-center reveal ${i > 0 ? `animate-delay-${i * 100}` : ''}`}>
                 <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-titan-red/10 flex items-center justify-center">
                   <i className={`fa-solid ${f.icon} text-2xl text-titan-red`} />

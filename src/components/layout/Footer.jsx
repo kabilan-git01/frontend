@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useApp } from '../../context/AppProvider';
 
 export default function Footer() {
+  const { gymHours } = useApp();
+
   return (
     <footer className="bg-titan-dark border-t border-white/5 pt-16 pb-8">
       <div className="container-titan grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
@@ -37,10 +40,12 @@ export default function Footer() {
         <div>
           <h3 className="font-heading text-lg font-bold mb-5">Gym Hours</h3>
           <ul className="space-y-2.5 text-sm">
-            <li className="flex justify-between text-titan-secondary"><span>Mon - Fri</span><span>05:00 - 23:00</span></li>
-            <li className="flex justify-between text-titan-secondary"><span>Saturday</span><span>06:00 - 21:00</span></li>
-            <li className="flex justify-between text-titan-secondary"><span>Sunday</span><span>08:00 - 18:00</span></li>
-            <li className="flex justify-between text-titan-secondary"><span>Sauna Access</span><span className="text-titan-red">24 Hours</span></li>
+            {gymHours.map((hour) => (
+              <li key={hour.id} className="flex justify-between text-titan-secondary">
+                <span>{hour.day}</span>
+                <span className={hour.isRed ? 'text-titan-red' : ''}>{hour.time}</span>
+              </li>
+            ))}
           </ul>
         </div>
 

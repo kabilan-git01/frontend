@@ -4,7 +4,7 @@ import Button from '../components/ui/Button';
 import { useApp } from '../context/AppProvider';
 
 export default function Contact() {
-  const { addEnquiry } = useApp();
+  const { addEnquiry, contactInfo } = useApp();
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -34,12 +34,7 @@ export default function Contact() {
             <div>
               <h2 className="text-2xl font-heading font-bold mb-6">Get In Touch</h2>
               <div className="space-y-6">
-                {[
-                  { icon: 'fa-location-dot', title: 'Location', text: '123 Iron Street, San Francisco, CA 94102' },
-                  { icon: 'fa-phone', title: 'Phone', text: '+1 (555) 123-4567' },
-                  { icon: 'fa-envelope', title: 'Email', text: 'info@titanfitness.com' },
-                  { icon: 'fa-clock', title: 'Hours', text: 'Mon-Fri: 5AM-11PM | Sat-Sun: 6AM-9PM' },
-                ].map((item) => (
+                {contactInfo.map((item) => (
                   <div key={item.title} className="flex gap-4">
                     <div className="w-12 h-12 rounded-xl bg-titan-red/10 flex items-center justify-center shrink-0">
                       <i className={`fa-solid ${item.icon} text-titan-red`} />
