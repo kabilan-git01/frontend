@@ -98,11 +98,21 @@ export function TestimonialSlider({ items }) {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
+    if (!items || items.length === 0) return;
     const timer = setInterval(() => setCurrent((c) => (c + 1) % items.length), 5000);
     return () => clearInterval(timer);
-  }, [items.length]);
+  }, [items?.length]);
+
+  if (!items || items.length === 0) {
+    return (
+      <div className="max-w-3xl mx-auto text-center py-8">
+        <p className="text-titan-secondary italic">No testimonials available.</p>
+      </div>
+    );
+  }
 
   const item = items[current];
+  if (!item) return null;
 
   return (
     <div className="max-w-3xl mx-auto text-center">
