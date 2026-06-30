@@ -264,12 +264,12 @@ export function AppProvider({ children }) {
     }
   }, [setEnquiries]);
 
-  const updateEnquiryStatus = useCallback(async (id, status) => {
-    setEnquiries((prev) => prev.map((e) => (e.id === id ? { ...e, status } : e)));
+  const updateEnquiry = useCallback(async (id, updates) => {
+    setEnquiries((prev) => prev.map((e) => (e.id === id ? { ...e, ...updates } : e)));
     try {
-      await supabase.from('contact_enquiries').update({ status }).eq('id', id);
+      await supabase.from('contact_enquiries').update(updates).eq('id', id);
     } catch (e) {
-      console.error('Error updating enquiry status in Supabase:', e);
+      console.error('Error updating enquiry in Supabase:', e);
     }
   }, [setEnquiries]);
 
@@ -311,12 +311,40 @@ export function AppProvider({ children }) {
     }
   }, [setMembers]);
 
+  const updateMember = useCallback(async (id, updates) => {
+    setMembers((prev) => prev.map((m) => (m.id === id ? { ...m, ...updates } : m)));
+    try {
+      await supabase.from('members').update(updates).eq('id', id);
+    } catch (e) {
+      console.error('Error updating member in Supabase:', e);
+    }
+  }, [setMembers]);
+
   const updatePlan = useCallback(async (id, updates) => {
     setPlans((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
     try {
       await supabase.from('membership_plans').update(updates).eq('id', id);
     } catch (e) {
       console.error('Error updating plan in Supabase:', e);
+    }
+  }, [setPlans]);
+
+  const addPlan = useCallback(async (plan) => {
+    const newPlan = { ...plan, id: plan.id || generateId() };
+    setPlans((prev) => [...prev, newPlan]);
+    try {
+      await supabase.from('membership_plans').insert(newPlan);
+    } catch (e) {
+      console.error('Error inserting plan in Supabase:', e);
+    }
+  }, [setPlans]);
+
+  const deletePlan = useCallback(async (id) => {
+    setPlans((prev) => prev.filter((p) => p.id !== id));
+    try {
+      await supabase.from('membership_plans').delete().eq('id', id);
+    } catch (e) {
+      console.error('Error deleting plan in Supabase:', e);
     }
   }, [setPlans]);
 
@@ -329,16 +357,53 @@ export function AppProvider({ children }) {
     }
   }, [setTrainers]);
 
+  const addTrainer = useCallback(async (trainer) => {
+    const newTrainer = { ...trainer, id: trainer.id || generateId() };
+    setTrainers((prev) => [...prev, newTrainer]);
+    try {
+      await supabase.from('trainers').insert(newTrainer);
+    } catch (e) {
+      console.error('Error inserting trainer in Supabase:', e);
+    }
+  }, [setTrainers]);
+
+  const deleteTrainer = useCallback(async (id) => {
+    setTrainers((prev) => prev.filter((t) => t.id !== id));
+    try {
+      await supabase.from('trainers').delete().eq('id', id);
+    } catch (e) {
+      console.error('Error deleting trainer in Supabase:', e);
+    }
+  }, [setTrainers]);
+
+  const deleteEnquiry = useCallback(async (id) => {
+    setEnquiries((prev) => prev.filter((e) => e.id !== id));
+    try {
+      await supabase.from('contact_enquiries').delete().eq('id', id);
+    } catch (e) {
+      console.error('Error deleting enquiry in Supabase:', e);
+    }
+  }, [setEnquiries]);
+
+  const updateReview = useCallback(async (id, updates) => {
+    setReviews((prev) => prev.map((r) => (r.id === id ? { ...r, ...updates } : r)));
+    try {
+      await supabase.from('testimonials').update(updates).eq('id', id);
+    } catch (e) {
+      console.error('Error updating testimonial in Supabase:', e);
+    }
+  }, [setReviews]);
+
   const value = {
     cart, cartCount, cartTotal, addToCart, removeFromCart, updateCartQuantity, clearCart,
     wishlist, wishlistCount, addToWishlist, removeFromWishlist, isInWishlist, moveToCart,
     auth, login, logout, register,
     preferences, setPreferences,
-    plans, updatePlan,
-    trainers, updateTrainer,
-    members, addMember, deleteMember,
-    enquiries, addEnquiry, updateEnquiryStatus,
-    reviews, addReview, deleteReview,
+    plans, updatePlan, addPlan, deletePlan,
+    trainers, updateTrainer, addTrainer, deleteTrainer,
+    members, addMember, deleteMember, updateMember,
+    enquiries, addEnquiry, updateEnquiry, deleteEnquiry,
+    reviews, addReview, deleteReview, updateReview,
     programs, gallery,
     homeFeatures, aboutStory, aboutStats, contactInfo, gymHours,
   };
