@@ -50,9 +50,9 @@ export default function Programs() {
                     </div>
                     <WishlistButton item={program} type="program" />
                   </div>
-                  <p className="text-titan-secondary mb-4">{program.description}</p>
+                  <p className="text-titan-secondary mb-4">{program?.description}</p>
                   <ul className="grid grid-cols-2 gap-2 mb-6">
-                    {program.highlights.map((h) => (
+                    {(program?.highlights || []).map((h) => (
                       <li key={h} className="flex items-center gap-2 text-sm text-titan-secondary">
                         <i className="fa-solid fa-square-check text-titan-red text-xs" /> {h}
                       </li>

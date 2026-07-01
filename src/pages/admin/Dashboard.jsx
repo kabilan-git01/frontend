@@ -60,7 +60,7 @@ export default function AdminDashboard() {
                   <p className="font-semibold text-sm">{plan.name}</p>
                   {plan.popular && <span className="text-titan-red text-xs">Popular</span>}
                 </div>
-                <span className="text-titan-red font-bold text-sm">{formatCurrency(plan.pricing.monthly)}/mo</span>
+                <span className="text-titan-red font-bold text-sm">{formatCurrency(plan?.pricing?.monthly ?? 0)}/mo</span>
               </div>
             ))}
           </div>

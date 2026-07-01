@@ -6,7 +6,7 @@ import { useApp } from '../context/AppProvider';
 export default function ProgramDetail() {
   const { slug } = useParams();
   const { programs } = useApp();
-  const program = programs.find((p) => p.slug === slug);
+  const program = programs.find((p) => p.slug === slug || p.id === slug);
 
   if (!program) {
     return (
@@ -31,7 +31,7 @@ export default function ProgramDetail() {
               <h2 className="text-3xl font-heading font-bold mt-2 mb-4">{program.name}</h2>
               <p className="text-titan-secondary mb-6 leading-relaxed">{program.description}</p>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-                {program.highlights.map((h) => (
+                {(program?.highlights || []).map((h) => (
                   <li key={h} className="flex items-center gap-2 text-titan-secondary">
                     <i className="fa-solid fa-square-check text-titan-red" /> {h}
                   </li>

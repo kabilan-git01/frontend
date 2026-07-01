@@ -85,32 +85,115 @@ export function AppProvider({ children }) {
     const fetchSupabaseData = async () => {
       try {
         const { data: pData, error: pErr } = await supabase.from('programs').select('*');
-        if (!pErr && pData && pData.length > 0) setPrograms(pData);
+        if (!pErr && pData && pData.length > 0) {
+          const mapped = pData.map(prog => {
+            const def = defaultPrograms.find(p => p.id === prog.id) || {};
+            return {
+              ...def,
+              ...prog,
+              image: prog.image_url || prog.image || def.image,
+              level: prog.difficulty || prog.level || def.level,
+              price: prog.price ?? def.price ?? 49,
+              highlights: prog.highlights || def.highlights || [],
+            };
+          });
+          setPrograms(mapped);
+        }
       } catch (e) { console.error('Error fetching programs:', e); }
 
       try {
         const { data: plData, error: plErr } = await supabase.from('membership_plans').select('*');
-        if (!plErr && plData && plData.length > 0) setPlans(plData);
+        if (!plErr && plData && plData.length > 0) {
+          const mapped = plData.map(plan => {
+            const def = defaultPlans.find(p => p.id === plan.id) || {};
+            return {
+              ...def,
+              ...plan,
+              pricing: {
+                monthly: plan.monthly_price ?? def.pricing?.monthly ?? 0,
+                quarterly: plan.quarterly_price ?? def.pricing?.quarterly ?? 0,
+                yearly: plan.yearly_price ?? def.pricing?.yearly ?? 0,
+              },
+              features: plan.features || def.features || [],
+            };
+          });
+          setPlans(mapped);
+        }
       } catch (e) { console.error('Error fetching plans:', e); }
 
       try {
         const { data: tData, error: tErr } = await supabase.from('trainers').select('*');
-        if (!tErr && tData && tData.length > 0) setTrainers(tData);
+        if (!tErr && tData && tData.length > 0) {
+          const mapped = tData.map(trainer => {
+            const def = defaultTrainers.find(t => t.id === trainer.id) || {};
+            return {
+              ...def,
+              ...trainer,
+              specialty: trainer.designation || trainer.specialty || def.specialty,
+              image: trainer.image_url || trainer.image || def.image,
+              sessionPrice: trainer.sessionPrice ?? def.sessionPrice ?? 50,
+              rating: trainer.rating ?? def.rating ?? 5.0,
+              sessionsCompleted: trainer.sessionsCompleted ?? def.sessionsCompleted ?? 100,
+              certs: trainer.certs || def.certs || [],
+              availability: trainer.availability || def.availability || [],
+              programs: trainer.programs || def.programs || [],
+              socials: {
+                facebook: trainer.facebook || def.socials?.facebook || '#',
+                twitter: trainer.twitter || def.socials?.twitter || '#',
+                instagram: trainer.instagram || def.socials?.instagram || '#',
+              },
+            };
+          });
+          setTrainers(mapped);
+        }
       } catch (e) { console.error('Error fetching trainers:', e); }
 
       try {
         const { data: rData, error: rErr } = await supabase.from('testimonials').select('*');
-        if (!rErr && rData && rData.length > 0) setReviews(rData);
+        if (!rErr && rData && rData.length > 0) {
+          const mapped = rData.map(rev => {
+            const def = defaultTestimonials.find(r => r.id === rev.id) || {};
+            const isSuccessStory = rev.designation?.endsWith(' | success-story');
+            const cleanDesignation = isSuccessStory ? rev.designation.replace(' | success-story', '') : rev.designation;
+            return {
+              ...def,
+              ...rev,
+              role: cleanDesignation || rev.role || def.role,
+              avatar: rev.image_url || rev.avatar || def.avatar,
+              quote: rev.review || rev.quote || def.quote,
+              featured: rev.is_featured ?? rev.featured ?? true,
+              type: isSuccessStory ? 'success-story' : (rev.type || def.type || 'testimonial'),
+            };
+          });
+          setReviews(mapped);
+        }
       } catch (e) { console.error('Error fetching reviews:', e); }
 
       try {
         const { data: gData, error: gErr } = await supabase.from('gallery').select('*');
-        if (!gErr && gData && gData.length > 0) setGallery(gData);
-      } catch (e) { console.error('Error fetching gallery_images:', e); }
+        if (!gErr && gData && gData.length > 0) {
+          const mapped = gData.map(img => {
+            const def = defaultGallery.find(g => g.id === img.id) || {};
+            return {
+              ...def,
+              ...img,
+              src: img.image_url || img.src || def.src,
+              alt: img.title || img.alt || def.alt,
+            };
+          });
+          setGallery(mapped);
+        }
+      } catch (e) { console.error('Error fetching gallery:', e); }
 
       try {
         const { data: eData, error: eErr } = await supabase.from('contact_enquiries').select('*');
-        if (!eErr && eData && eData.length > 0) setEnquiries(eData);
+        if (!eErr && eData && eData.length > 0) {
+          const mapped = eData.map(enq => ({
+            ...enq,
+            date: enq.created_at ? enq.created_at.split('T')[0] : (enq.date || new Date().toISOString().split('T')[0])
+          }));
+          setEnquiries(mapped);
+        }
       } catch (e) { console.error('Error fetching enquiries:', e); }
 
       try {
@@ -255,10 +338,20 @@ export function AppProvider({ children }) {
   }, [setAuth, setMembers]);
 
   const addEnquiry = useCallback(async (enquiry) => {
-    const newEnquiry = { ...enquiry, id: generateId(), date: new Date().toISOString().split('T')[0], status: 'new' };
+    const newId = crypto.randomUUID();
+    const newEnquiry = { ...enquiry, id: newId, date: new Date().toISOString().split('T')[0], status: 'new' };
     setEnquiries((prev) => [newEnquiry, ...prev]);
     try {
-      await supabase.from('contact_enquiries').insert(newEnquiry);
+      const dbEnquiry = {
+        id: newId,
+        name: newEnquiry.name,
+        email: newEnquiry.email,
+        phone: newEnquiry.phone || null,
+        subject: newEnquiry.subject,
+        message: newEnquiry.message,
+        status: newEnquiry.status
+      };
+      await supabase.from('contact_enquiries').insert(dbEnquiry);
     } catch (e) {
       console.error('Error inserting enquiry to Supabase:', e);
     }
@@ -267,17 +360,31 @@ export function AppProvider({ children }) {
   const updateEnquiry = useCallback(async (id, updates) => {
     setEnquiries((prev) => prev.map((e) => (e.id === id ? { ...e, ...updates } : e)));
     try {
-      await supabase.from('contact_enquiries').update(updates).eq('id', id);
+      const dbUpdates = { ...updates };
+      delete dbUpdates.date;
+      Object.keys(dbUpdates).forEach(key => dbUpdates[key] === undefined && delete dbUpdates[key]);
+      await supabase.from('contact_enquiries').update(dbUpdates).eq('id', id);
     } catch (e) {
       console.error('Error updating enquiry in Supabase:', e);
     }
   }, [setEnquiries]);
 
   const addReview = useCallback(async (review) => {
-    const newReview = { ...review, id: generateId() };
+    const newId = crypto.randomUUID();
+    const isSuccess = review.type === 'success-story';
+    const newReview = { ...review, id: newId };
     setReviews((prev) => [newReview, ...prev]);
     try {
-      await supabase.from('testimonials').insert(newReview);
+      const dbReview = {
+        id: newId,
+        name: newReview.name,
+        designation: isSuccess ? `${newReview.role} | success-story` : newReview.role,
+        review: newReview.quote,
+        image_url: newReview.avatar,
+        rating: newReview.rating,
+        is_featured: newReview.featured ?? true,
+      };
+      await supabase.from('testimonials').insert(dbReview);
     } catch (e) {
       console.error('Error inserting testimonial in Supabase:', e);
     }
@@ -314,7 +421,15 @@ export function AppProvider({ children }) {
   const updateMember = useCallback(async (id, updates) => {
     setMembers((prev) => prev.map((m) => (m.id === id ? { ...m, ...updates } : m)));
     try {
-      await supabase.from('members').update(updates).eq('id', id);
+      const dbUpdates = {
+        name: updates.name,
+        email: updates.email,
+        plan: updates.plan,
+        joinDate: updates.joinDate,
+        status: updates.status
+      };
+      Object.keys(dbUpdates).forEach(key => dbUpdates[key] === undefined && delete dbUpdates[key]);
+      await supabase.from('members').update(dbUpdates).eq('id', id);
     } catch (e) {
       console.error('Error updating member in Supabase:', e);
     }
@@ -323,7 +438,17 @@ export function AppProvider({ children }) {
   const updatePlan = useCallback(async (id, updates) => {
     setPlans((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
     try {
-      await supabase.from('membership_plans').update(updates).eq('id', id);
+      const dbPlan = {
+        name: updates.name,
+        slug: updates.slug,
+        description: updates.description,
+        monthly_price: updates.pricing?.monthly,
+        quarterly_price: updates.pricing?.quarterly,
+        yearly_price: updates.pricing?.yearly,
+        popular: updates.popular,
+      };
+      Object.keys(dbPlan).forEach(key => dbPlan[key] === undefined && delete dbPlan[key]);
+      await supabase.from('membership_plans').update(dbPlan).eq('id', id);
     } catch (e) {
       console.error('Error updating plan in Supabase:', e);
     }
@@ -333,7 +458,18 @@ export function AppProvider({ children }) {
     const newPlan = { ...plan, id: plan.id || generateId() };
     setPlans((prev) => [...prev, newPlan]);
     try {
-      await supabase.from('membership_plans').insert(newPlan);
+      const dbPlan = {
+        id: newPlan.id,
+        name: newPlan.name,
+        slug: newPlan.slug,
+        category: 'plans',
+        description: newPlan.description,
+        monthly_price: newPlan.pricing?.monthly,
+        quarterly_price: newPlan.pricing?.quarterly,
+        yearly_price: newPlan.pricing?.yearly,
+        popular: newPlan.popular,
+      };
+      await supabase.from('membership_plans').insert(dbPlan);
     } catch (e) {
       console.error('Error inserting plan in Supabase:', e);
     }
@@ -351,17 +487,47 @@ export function AppProvider({ children }) {
   const updateTrainer = useCallback(async (id, updates) => {
     setTrainers((prev) => prev.map((t) => (t.id === id ? { ...t, ...updates } : t)));
     try {
-      await supabase.from('trainers').update(updates).eq('id', id);
+      const dbTrainer = {
+        name: updates.name,
+        slug: updates.slug,
+        designation: updates.specialty,
+        bio: updates.bio,
+        experience: updates.experience !== undefined ? (parseInt(updates.experience) || 0) : undefined,
+        image_url: updates.image,
+        email: updates.email,
+        phone: updates.phone,
+        facebook: updates.socials?.facebook,
+        twitter: updates.socials?.twitter,
+        instagram: updates.socials?.instagram,
+      };
+      Object.keys(dbTrainer).forEach(key => dbTrainer[key] === undefined && delete dbTrainer[key]);
+      await supabase.from('trainers').update(dbTrainer).eq('id', id);
     } catch (e) {
       console.error('Error updating trainer in Supabase:', e);
     }
   }, [setTrainers]);
 
   const addTrainer = useCallback(async (trainer) => {
-    const newTrainer = { ...trainer, id: trainer.id || generateId() };
+    const newId = crypto.randomUUID();
+    const newTrainer = { ...trainer, id: newId };
     setTrainers((prev) => [...prev, newTrainer]);
     try {
-      await supabase.from('trainers').insert(newTrainer);
+      const dbTrainer = {
+        id: newId,
+        name: newTrainer.name,
+        slug: newTrainer.slug,
+        designation: newTrainer.specialty,
+        bio: newTrainer.bio,
+        experience: parseInt(newTrainer.experience) || 0,
+        image_url: newTrainer.image,
+        email: newTrainer.email,
+        phone: newTrainer.phone,
+        facebook: newTrainer.socials?.facebook || '#',
+        twitter: newTrainer.socials?.twitter || '#',
+        instagram: newTrainer.socials?.instagram || '#',
+        is_active: true
+      };
+      await supabase.from('trainers').insert(dbTrainer);
     } catch (e) {
       console.error('Error inserting trainer in Supabase:', e);
     }
@@ -388,7 +554,17 @@ export function AppProvider({ children }) {
   const updateReview = useCallback(async (id, updates) => {
     setReviews((prev) => prev.map((r) => (r.id === id ? { ...r, ...updates } : r)));
     try {
-      await supabase.from('testimonials').update(updates).eq('id', id);
+      const isSuccess = updates.type === 'success-story' || (updates.type === undefined && reviews.find(r => r.id === id)?.type === 'success-story');
+      const dbReview = {
+        name: updates.name,
+        designation: updates.role !== undefined ? (isSuccess ? `${updates.role} | success-story` : updates.role) : undefined,
+        review: updates.quote,
+        image_url: updates.avatar,
+        rating: updates.rating,
+        is_featured: updates.featured,
+      };
+      Object.keys(dbReview).forEach(key => dbReview[key] === undefined && delete dbReview[key]);
+      await supabase.from('testimonials').update(dbReview).eq('id', id);
     } catch (e) {
       console.error('Error updating testimonial in Supabase:', e);
     }

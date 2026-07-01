@@ -20,29 +20,27 @@ export default function Login() {
 
   if (auth.isAuthenticated) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    setTimeout(() => {
-      if (mode === 'login') {
-        const result = login(form.email, form.password);
-        if (result.success) {
-          navigate(result.role === 'admin' ? '/admin' : '/');
-        } else {
-          setError(result.error);
-        }
+    if (mode === 'login') {
+      const result = login(form.email, form.password);
+      if (result.success) {
+        navigate(result.role === 'admin' ? '/admin' : '/');
       } else {
-        const result = register(form.name, form.email, form.password);
-        if (result.success) {
-          navigate('/');
-        } else {
-          setError(result.error);
-        }
+        setError(result.error);
       }
-      setLoading(false);
-    }, 500);
+    } else {
+      const result = await register(form.name, form.email, form.password);
+      if (result.success) {
+        navigate('/');
+      } else {
+        setError(result.error);
+      }
+    }
+    setLoading(false);
   };
 
   return (

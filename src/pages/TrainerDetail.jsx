@@ -8,7 +8,7 @@ import { formatCurrency } from '../utils/helpers';
 export default function TrainerDetail() {
   const { slug } = useParams();
   const { trainers, addToCart } = useApp();
-  const trainer = trainers.find((t) => t.slug === slug);
+  const trainer = trainers.find((t) => t.slug === slug || t.id === slug);
   const [selectedSlot, setSelectedSlot] = useState('');
   const [bookingDate, setBookingDate] = useState('');
   const [booked, setBooked] = useState(false);
@@ -53,7 +53,7 @@ export default function TrainerDetail() {
                 </div>
               </div>
               <div className="flex gap-3 mt-4">
-                {Object.entries(trainer.socials).map(([platform, url]) => (
+                {Object.entries(trainer?.socials || {}).map(([platform, url]) => (
                   <a key={platform} href={url} className="w-10 h-10 rounded-lg border border-white/10 flex items-center justify-center hover:border-titan-red hover:text-titan-red transition-all">
                     <i className={`fa-brands fa-${platform}`} />
                   </a>
@@ -74,7 +74,7 @@ export default function TrainerDetail() {
               <p className="text-titan-secondary mb-6 leading-relaxed">{trainer.bio}</p>
 
               <div className="flex flex-wrap gap-2 mb-8">
-                {trainer.certs.map((cert) => (
+                {(trainer?.certs || []).map((cert) => (
                   <span key={cert} className="px-3 py-1 text-xs font-semibold uppercase bg-titan-red/10 border border-titan-red/30 rounded-full text-titan-red">{cert}</span>
                 ))}
               </div>
@@ -102,7 +102,7 @@ export default function TrainerDetail() {
                     <div>
                       <label className="block text-sm text-titan-secondary mb-2">Available Slots</label>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {trainer.availability.map((slot) => (
+                        {(trainer?.availability || []).map((slot) => (
                           <button
                             key={slot}
                             type="button"
