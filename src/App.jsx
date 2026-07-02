@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import AdminLayout from './components/admin/AdminLayout';
-import ProtectedRoute from './components/admin/ProtectedRoute';
+import ProtectedRoute from './components/shared/ProtectedRoute';
 
 import Home from './pages/Home';
 import About from './pages/About';
@@ -18,6 +18,8 @@ import BMICalculator from './pages/BMICalculator';
 import Contact from './pages/Contact';
 import Gallery from './pages/Gallery';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Profile from './pages/Profile';
 
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminPlans from './pages/admin/AdminPlans';
@@ -48,16 +50,18 @@ export default function App() {
         <Route path="trainers" element={<Trainers />} />
         <Route path="trainers/:slug" element={<TrainerDetail />} />
         <Route path="membership" element={<MembershipPlans />} />
-        <Route path="cart" element={<Cart />} />
-        <Route path="wishlist" element={<Wishlist />} />
+        <Route path="cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+        <Route path="wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
         <Route path="search" element={<Search />} />
         <Route path="bmi-calculator" element={<BMICalculator />} />
         <Route path="contact" element={<Contact />} />
         <Route path="gallery" element={<Gallery />} />
         <Route path="login" element={<Login />} />
+        <Route path="signup" element={<Signup />} />
+        <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       </Route>
 
-      <Route path="admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+      <Route path="admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminLayout /></ProtectedRoute>}>
         <Route index element={<AdminDashboard />} />
         <Route path="plans" element={<AdminPlans />} />
         <Route path="trainers" element={<AdminTrainers />} />

@@ -1,22 +1,24 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { PageHeader } from '../components/ui/SectionHeader';
 import Button from '../components/ui/Button';
 import { useApp } from '../context/AppProvider';
 
 export default function Login() {
-  const [mode, setMode] = useState('login');
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, register, auth } = useApp();
+  const { login, auth } = useApp();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
 
   useEffect(() => {
     if (auth.isAuthenticated) {
-      navigate(auth.role === 'admin' ? '/admin' : '/', { replace: true });
+      navigate(from, { replace: true });
     }
-  }, [auth.isAuthenticated, auth.role, navigate]);
+  }, [auth.isAuthenticated, navigate, from]);
 
   if (auth.isAuthenticated) return null;
 
@@ -25,71 +27,81 @@ export default function Login() {
     setError('');
     setLoading(true);
 
-    if (mode === 'login') {
-      const result = login(form.email, form.password);
-      if (result.success) {
-        navigate(result.role === 'admin' ? '/admin' : '/');
-      } else {
-        setError(result.error);
-      }
-    } else {
-      const result = await register(form.name, form.email, form.password);
-      if (result.success) {
-        navigate('/');
-      } else {
-        setError(result.error);
-      }
-    }
+    const result = await login(form.email, form.password);
     setLoading(false);
+
+    if (result.success) {
+      navigate(from, { replace: true });
+    } else {
+      setError(result.error || 'Invalid email or password');
+    }
   };
 
   return (
     <div>
-      <PageHeader title={mode === 'login' ? 'Login' : 'Sign Up'} breadcrumbs={[{ label: 'Home', to: '/' }, { label: mode === 'login' ? 'Login' : 'Sign Up' }]} />
+      <PageHeader 
+        title="Welcome Back" 
+        breadcrumbs={[
+          { label: 'Home', to: '/' }, 
+          { label: 'Login' }
+        ]} 
+      />
 
       <section className="section-padding">
         <div className="container-titan max-w-md">
           <div className="glass-card p-6 md:p-8">
-            <div className="flex gap-2 mb-6">
-              {['login', 'register'].map((m) => (
-                <button
-                  key={m}
-                  onClick={() => { setMode(m); setError(''); }}
-                  className={`flex-1 py-2 text-sm uppercase tracking-wider rounded-lg border transition-all ${
-                    mode === m ? 'bg-titan-red border-titan-red text-white' : 'border-white/20 text-titan-secondary'
-                  }`}
-                >
-                  {m === 'login' ? 'Login' : 'Sign Up'}
-                </button>
-              ))}
-            </div>
+            <h2 className="text-2xl font-heading font-bold text-center mb-2">Login to Your Account</h2>
+            <p className="text-titan-secondary text-sm text-center mb-8">Enter your credentials to access your trainer dashboard, membership plans, and active workouts.</p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {mode === 'register' && (
-                <div>
-                  <label className="block text-sm text-titan-secondary mb-2">Full Name</label>
-                  <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="input-field" required />
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="block text-sm font-semibold text-titan-secondary mb-2">Email Address</label>
+                <input 
+                  type="email" 
+                  value={form.email} 
+                  onChange={(e) => setForm({ ...form, email: e.target.value })} 
+                  className="input-field" 
+                  placeholder="name@example.com"
+                  required 
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-titan-secondary mb-2">Password</label>
+                <input 
+                  type="password" 
+                  value={form.password} 
+                  onChange={(e) => setForm({ ...form, password: e.target.value })} 
+                  className="input-field" 
+                  placeholder="••••••••"
+                  required 
+                  minLength={6} 
+                />
+              </div>
+
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-lg text-sm flex items-center gap-2">
+                  <i className="fa-solid fa-triangle-exclamation"></i>
+                  <span>{error}</span>
                 </div>
-              )}
-              <div>
-                <label className="block text-sm text-titan-secondary mb-2">Email</label>
-                <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="input-field" required />
-              </div>
-              <div>
-                <label className="block text-sm text-titan-secondary mb-2">Password</label>
-                <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="input-field" required minLength={6} />
-              </div>
-
-              {error && <p className="text-red-400 text-sm">{error}</p>}
-
-              {mode === 'login' && (
-                <p className="text-titan-muted text-xs">Admin demo: admin@titan.com / admin123</p>
               )}
 
               <Button type="submit" loading={loading} className="w-full">
-                {mode === 'login' ? 'Login' : 'Create Account'}
+                Sign In
               </Button>
             </form>
+
+            <div className="mt-6 text-center text-sm text-titan-muted">
+              Don't have an account?{' '}
+              <Link to="/signup" className="text-titan-red hover:underline font-semibold">
+                Sign up now
+              </Link>
+            </div>
+
+            <div className="mt-8 pt-6 border-t border-white/5 text-center">
+              <span className="text-xs text-titan-muted">Demo Credentials:</span>
+              <p className="text-xs text-titan-secondary mt-1">Admin Dashboard: admin@titan.com / admin123</p>
+            </div>
           </div>
         </div>
       </section>

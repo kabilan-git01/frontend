@@ -5,7 +5,7 @@ import { IconButton } from '../ui/Button';
 import SearchBar from '../search/SearchBar';
 
 const navLinks = [
-  { to: '/about', label: 'About' },
+  { to: '/about', label: 'Our Story' },
   { to: '/programs', label: 'Programs' },
   { to: '/trainers', label: 'Trainers' },
   { to: '/membership', label: 'Pricing' },
@@ -17,8 +17,20 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const { cartCount, wishlistCount } = useApp();
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const { cartCount, wishlistCount, auth, logout } = useApp();
   const headerRef = useRef(null);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setUserDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -71,9 +83,71 @@ export default function Header() {
             <IconButton icon="fa-heart" badge={wishlistCount} to="/wishlist" label="Wishlist" />
             <IconButton icon="fa-cart-shopping" badge={cartCount} to="/cart" label="Cart" />
 
-            <Link to="/membership" className="hidden lg:inline-flex btn-primary btn-sm !px-4 !py-2 !text-xs">
-              Join Now
-            </Link>
+            {!auth.isAuthenticated ? (
+              <>
+                <Link to="/login" className="text-sm font-semibold uppercase tracking-wider text-titan-secondary hover:text-white transition-colors py-2 px-3">
+                  Login
+                </Link>
+                <Link to="/signup" className="hidden lg:inline-flex btn-primary btn-sm !px-4 !py-2 !text-xs">
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  className="flex items-center gap-2 py-2 px-3 rounded-lg border border-white/10 hover:border-titan-red/50 hover:text-white transition-all bg-white/5"
+                >
+                  <span className="w-6 h-6 rounded-full bg-titan-red/20 text-titan-red text-xs font-bold flex items-center justify-center uppercase">
+                    {auth.user?.name ? auth.user.name.charAt(0) : 'U'}
+                  </span>
+                  <span className="hidden md:inline text-sm font-semibold tracking-wide text-white">
+                    {auth.user?.name || 'User'}
+                  </span>
+                  <i className={`fa-solid fa-chevron-down text-[10px] text-titan-secondary transition-transform ${userDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {userDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 rounded-lg bg-titan-dark border border-white/10 shadow-xl overflow-hidden z-[1100]">
+                    <div className="px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+                      <p className="text-xs text-titan-muted">Signed in as</p>
+                      <p className="text-sm font-semibold text-white truncate mt-0.5">{auth.user?.email}</p>
+                    </div>
+                    
+                    <Link
+                      to="/profile"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-titan-secondary hover:text-white hover:bg-titan-red/10 transition-colors"
+                    >
+                      <i className="fa-regular fa-user text-xs" />
+                      <span>Profile</span>
+                    </Link>
+                    
+                    {auth.role === 'admin' && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-2 px-4 py-3 text-sm text-titan-secondary hover:text-white hover:bg-titan-red/10 transition-colors"
+                      >
+                        <i className="fa-solid fa-shield-halved text-xs" />
+                        <span>Admin Panel</span>
+                      </Link>
+                    )}
+
+                    <button
+                      onClick={() => {
+                        setUserDropdownOpen(false);
+                        logout();
+                      }}
+                      className="flex items-center gap-2 w-full text-left px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors border-t border-white/5"
+                    >
+                      <i className="fa-solid fa-arrow-right-from-bracket text-xs" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
 
             <button
               className="xl:hidden flex flex-col gap-1.5 p-2"
@@ -128,11 +202,50 @@ export default function Header() {
                 BMI Calculator
               </Link>
             </li>
-            <li>
-              <Link to="/membership" onClick={() => setMenuOpen(false)} className="block mt-4 btn-primary text-center">
-                Join Now
-              </Link>
-            </li>
+            {!auth.isAuthenticated ? (
+              <>
+                <li>
+                  <Link to="/login" onClick={() => setMenuOpen(false)} className="block py-3 px-4 text-lg uppercase tracking-wider hover:bg-titan-red/10 hover:text-titan-red rounded-lg transition-colors">
+                    Login
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/signup" onClick={() => setMenuOpen(false)} className="block py-3 px-4 text-lg uppercase tracking-wider hover:bg-titan-red/10 hover:text-titan-red rounded-lg transition-colors">
+                    Sign Up
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <div className="my-4 mx-4 pt-4 border-t border-white/10">
+                  <p className="text-xs uppercase tracking-wider text-titan-muted">Account</p>
+                  <p className="text-sm font-semibold text-white mt-1 truncate">{auth.user?.name || auth.user?.email}</p>
+                </div>
+                <li>
+                  <Link to="/profile" onClick={() => setMenuOpen(false)} className="block py-3 px-4 text-lg uppercase tracking-wider hover:bg-titan-red/10 hover:text-titan-red rounded-lg transition-colors">
+                    <i className="fa-regular fa-user mr-2 text-sm" /> Profile
+                  </Link>
+                </li>
+                {auth.role === 'admin' && (
+                  <li>
+                    <Link to="/admin" onClick={() => setMenuOpen(false)} className="block py-3 px-4 text-lg uppercase tracking-wider hover:bg-titan-red/10 hover:text-titan-red rounded-lg transition-colors">
+                      <i className="fa-solid fa-shield-halved mr-2 text-sm" /> Admin Panel
+                    </Link>
+                  </li>
+                )}
+                <li>
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      logout();
+                    }}
+                    className="block w-full text-left py-3 px-4 text-lg uppercase tracking-wider hover:bg-red-500/10 text-red-400 hover:text-red-300 rounded-lg transition-colors"
+                  >
+                    <i className="fa-solid fa-arrow-right-from-bracket mr-2 text-sm" /> Logout
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
         </nav>
       </div>

@@ -65,6 +65,7 @@ export function AppProvider({ children }) {
   const [cart, setCart] = useLocalStorage(STORAGE_KEYS.CART, []);
   const [wishlist, setWishlist] = useLocalStorage(STORAGE_KEYS.WISHLIST, []);
   const [auth, setAuth] = useLocalStorage(STORAGE_KEYS.AUTH, { user: null, isAuthenticated: false, role: 'guest' });
+  const [authLoading, setAuthLoading] = useState(true);
   const [preferences, setPreferences] = useLocalStorage(STORAGE_KEYS.PREFERENCES, { billingPeriod: 'monthly', theme: 'dark' });
   const [plans, setPlans] = useLocalStorage(STORAGE_KEYS.PLANS, defaultPlans);
   const [trainers, setTrainers] = useLocalStorage(STORAGE_KEYS.TRAINERS, defaultTrainers);
@@ -79,6 +80,81 @@ export function AppProvider({ children }) {
   const [aboutStats, setAboutStats] = useState(defaultAboutStats);
   const [contactInfo, setContactInfo] = useState(defaultContactInfo);
   const [gymHours, setGymHours] = useState(defaultGymHours);
+
+  // Sync with Supabase Auth session on mount and listen to changes
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        const user = session.user;
+        const role = user.email === 'admin@titan.com' || user.user_metadata?.role === 'admin' ? 'admin' : 'member';
+        setAuth({
+          user: {
+            id: user.id,
+            name: user.user_metadata?.name || user.email.split('@')[0],
+            email: user.email,
+            role: role
+          },
+          isAuthenticated: true,
+          role: role
+        });
+      } else {
+        // Mock Admin Fallback Check
+        const localAuthRaw = localStorage.getItem(STORAGE_KEYS.AUTH);
+        if (localAuthRaw) {
+          try {
+            const localAuth = JSON.parse(localAuthRaw);
+            if (localAuth && localAuth.isAuthenticated && localAuth.user?.email === 'admin@titan.com') {
+              setAuth(localAuth);
+              setAuthLoading(false);
+              return;
+            }
+          } catch (e) {
+            console.error('Error parsing local auth:', e);
+          }
+        }
+        setAuth({ user: null, isAuthenticated: false, role: 'guest' });
+      }
+      setAuthLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        const user = session.user;
+        const role = user.email === 'admin@titan.com' || user.user_metadata?.role === 'admin' ? 'admin' : 'member';
+        setAuth({
+          user: {
+            id: user.id,
+            name: user.user_metadata?.name || user.email.split('@')[0],
+            email: user.email,
+            role: role
+          },
+          isAuthenticated: true,
+          role: role
+        });
+      } else {
+        // Mock Admin Fallback Check
+        const localAuthRaw = localStorage.getItem(STORAGE_KEYS.AUTH);
+        if (localAuthRaw) {
+          try {
+            const localAuth = JSON.parse(localAuthRaw);
+            if (localAuth && localAuth.isAuthenticated && localAuth.user?.email === 'admin@titan.com') {
+              setAuthLoading(false);
+              // Stay logged in as admin
+              return;
+            }
+          } catch (e) {
+            console.error('Error parsing local auth:', e);
+          }
+        }
+        setAuth({ user: null, isAuthenticated: false, role: 'guest' });
+      }
+      setAuthLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [setAuth]);
 
   // Sync with Supabase on mount
   useEffect(() => {
@@ -299,42 +375,114 @@ export function AppProvider({ children }) {
     removeFromWishlist(wishlistId);
   }, [wishlist, addToCart, removeFromWishlist, preferences.billingPeriod]);
 
-  const login = useCallback((email, password) => {
-    if (email === 'admin@titan.com' && password === 'admin123') {
-      const user = { id: 'admin-1', name: 'Admin', email, role: 'admin' };
-      setAuth({ user, isAuthenticated: true, role: 'admin' });
-      return { success: true, role: 'admin' };
+  const login = useCallback(async (email, password) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) {
+        // Local Fallback for Demo Admin Account
+        if (email === 'admin@titan.com' && password === 'admin123') {
+          const user = { id: 'admin-1', name: 'Admin', email, role: 'admin' };
+          setAuth({ user, isAuthenticated: true, role: 'admin', loading: false });
+          return { success: true, role: 'admin' };
+        }
+        return { success: false, error: error.message };
+      }
+      const user = data.user;
+      const role = user.email === 'admin@titan.com' || user.user_metadata?.role === 'admin' ? 'admin' : 'member';
+      setAuth({
+        user: {
+          id: user.id,
+          name: user.user_metadata?.name || user.email.split('@')[0],
+          email: user.email,
+          role: role
+        },
+        isAuthenticated: true,
+        role: role,
+        loading: false
+      });
+      return { success: true, role };
+    } catch (err) {
+      // Local Fallback for Demo Admin Account
+      if (email === 'admin@titan.com' && password === 'admin123') {
+        const user = { id: 'admin-1', name: 'Admin', email, role: 'admin' };
+        setAuth({ user, isAuthenticated: true, role: 'admin', loading: false });
+        return { success: true, role: 'admin' };
+      }
+      return { success: false, error: err.message };
     }
-    const foundMember = members.find((m) => m.email.toLowerCase() === email.toLowerCase());
-    if (foundMember) {
-      const user = { id: foundMember.id, name: foundMember.name, email, role: 'member' };
-      setAuth({ user, isAuthenticated: true, role: 'member' });
-      return { success: true, role: 'member' };
-    }
-    if (email && password) {
-      const user = { id: generateId(), name: email.split('@')[0], email, role: 'member' };
-      setAuth({ user, isAuthenticated: true, role: 'member' });
-      return { success: true, role: 'member' };
-    }
-    return { success: false, error: 'Invalid credentials' };
-  }, [setAuth, members]);
+  }, [setAuth]);
 
-  const logout = useCallback(() => {
-    setAuth({ user: null, isAuthenticated: false, role: 'guest' });
+  const logout = useCallback(async () => {
+    try {
+      await supabase.auth.signOut();
+      setAuth({ user: null, isAuthenticated: false, role: 'guest' });
+    } catch (e) {
+      console.error('Error signing out:', e);
+    }
   }, [setAuth]);
 
   const register = useCallback(async (name, email, password) => {
     if (!name || !email || !password) return { success: false, error: 'All fields required' };
-    const newMember = { id: generateId(), name, email, plan: 'Basic Plan', joinDate: new Date().toISOString().split('T')[0], status: 'active' };
-    setMembers((prev) => [...prev, newMember]);
     try {
-      await supabase.from('members').insert(newMember);
-    } catch (e) {
-      console.error('Error saving registered member to Supabase:', e);
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: name,
+            role: 'member'
+          }
+        }
+      });
+      if (error) {
+        return { success: false, error: error.message };
+      }
+      const user = data.user;
+      const isSessionActive = !!data.session;
+      const role = 'member';
+      
+      const userObj = {
+        id: user.id,
+        name: user.user_metadata?.name || name,
+        email: user.email,
+        role: role
+      };
+
+      try {
+        const newMember = {
+          id: user.id,
+          name,
+          email,
+          plan: 'Basic Plan',
+          joinDate: new Date().toISOString().split('T')[0],
+          status: 'active',
+          user_id: user.id
+        };
+        await supabase.from('members').insert(newMember);
+        setMembers((prev) => [...prev, newMember]);
+      } catch (e) {
+        console.error('Error inserting member to public table:', e);
+      }
+
+      if (isSessionActive) {
+        setAuth({
+          user: userObj,
+          isAuthenticated: true,
+          role: role
+        });
+      }
+
+      return {
+        success: true,
+        sessionActive: isSessionActive,
+        message: isSessionActive ? 'Registration successful.' : 'Registration successful! Please check your email for confirmation.'
+      };
+    } catch (err) {
+      return { success: false, error: err.message };
     }
-    const user = { id: newMember.id, name, email, role: 'member' };
-    setAuth({ user, isAuthenticated: true, role: 'member' });
-    return { success: true };
   }, [setAuth, setMembers]);
 
   const addEnquiry = useCallback(async (enquiry) => {
@@ -342,6 +490,7 @@ export function AppProvider({ children }) {
     const newEnquiry = { ...enquiry, id: newId, date: new Date().toISOString().split('T')[0], status: 'new' };
     setEnquiries((prev) => [newEnquiry, ...prev]);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
       const dbEnquiry = {
         id: newId,
         name: newEnquiry.name,
@@ -349,7 +498,8 @@ export function AppProvider({ children }) {
         phone: newEnquiry.phone || null,
         subject: newEnquiry.subject,
         message: newEnquiry.message,
-        status: newEnquiry.status
+        status: newEnquiry.status,
+        ...(user ? { user_id: user.id } : {})
       };
       await supabase.from('contact_enquiries').insert(dbEnquiry);
     } catch (e) {
@@ -375,6 +525,7 @@ export function AppProvider({ children }) {
     const newReview = { ...review, id: newId };
     setReviews((prev) => [newReview, ...prev]);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
       const dbReview = {
         id: newId,
         name: newReview.name,
@@ -383,6 +534,7 @@ export function AppProvider({ children }) {
         image_url: newReview.avatar,
         rating: newReview.rating,
         is_featured: newReview.featured ?? true,
+        ...(user ? { user_id: user.id } : {})
       };
       await supabase.from('testimonials').insert(dbReview);
     } catch (e) {
@@ -403,7 +555,12 @@ export function AppProvider({ children }) {
     const newMember = { ...member, id: generateId(), joinDate: new Date().toISOString().split('T')[0], status: 'active' };
     setMembers((prev) => [...prev, newMember]);
     try {
-      await supabase.from('members').insert(newMember);
+      const { data: { user } } = await supabase.auth.getUser();
+      const dbMember = {
+        ...newMember,
+        ...(user ? { user_id: user.id } : {})
+      };
+      await supabase.from('members').insert(dbMember);
     } catch (e) {
       console.error('Error inserting member in Supabase:', e);
     }
@@ -458,6 +615,7 @@ export function AppProvider({ children }) {
     const newPlan = { ...plan, id: plan.id || generateId() };
     setPlans((prev) => [...prev, newPlan]);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
       const dbPlan = {
         id: newPlan.id,
         name: newPlan.name,
@@ -468,6 +626,7 @@ export function AppProvider({ children }) {
         quarterly_price: newPlan.pricing?.quarterly,
         yearly_price: newPlan.pricing?.yearly,
         popular: newPlan.popular,
+        ...(user ? { user_id: user.id } : {})
       };
       await supabase.from('membership_plans').insert(dbPlan);
     } catch (e) {
@@ -512,6 +671,7 @@ export function AppProvider({ children }) {
     const newTrainer = { ...trainer, id: newId };
     setTrainers((prev) => [...prev, newTrainer]);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
       const dbTrainer = {
         id: newId,
         name: newTrainer.name,
@@ -525,7 +685,8 @@ export function AppProvider({ children }) {
         facebook: newTrainer.socials?.facebook || '#',
         twitter: newTrainer.socials?.twitter || '#',
         instagram: newTrainer.socials?.instagram || '#',
-        is_active: true
+        is_active: true,
+        ...(user ? { user_id: user.id } : {})
       };
       await supabase.from('trainers').insert(dbTrainer);
     } catch (e) {
@@ -573,7 +734,7 @@ export function AppProvider({ children }) {
   const value = {
     cart, cartCount, cartTotal, addToCart, removeFromCart, updateCartQuantity, clearCart,
     wishlist, wishlistCount, addToWishlist, removeFromWishlist, isInWishlist, moveToCart,
-    auth, login, logout, register,
+    auth: useMemo(() => ({ ...auth, loading: authLoading }), [auth, authLoading]), login, logout, register,
     preferences, setPreferences,
     plans, updatePlan, addPlan, deletePlan,
     trainers, updateTrainer, addTrainer, deleteTrainer,

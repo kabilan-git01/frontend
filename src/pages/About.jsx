@@ -8,7 +8,7 @@ export default function About() {
 
   return (
     <div ref={revealRef}>
-      <PageHeader title="Our Story" breadcrumbs={[{ label: 'Home', to: '/' }, { label: 'About' }]} />
+      <PageHeader title="Our Story" breadcrumbs={[{ label: 'Home', to: '/' }, { label: 'Our Story' }]} />
 
       <section className="section-padding">
         <div className="container-titan">

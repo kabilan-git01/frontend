@@ -1,8 +1,24 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { useApp } from '../../context/AppProvider';
 
 export default function Footer() {
-  const { gymHours } = useApp();
+  const { gymHours, addEnquiry } = useApp();
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!email) return;
+    addEnquiry({
+      name: 'Newsletter Subscriber',
+      email: email,
+      subject: 'Newsletter Subscription',
+      message: 'User subscribed to the newsletter from the footer.',
+    });
+    setSubmitted(true);
+    setEmail('');
+  };
 
   return (
     <footer className="bg-titan-dark border-t border-white/5 pt-16 pb-8">
@@ -52,12 +68,26 @@ export default function Footer() {
         <div>
           <h3 className="font-heading text-lg font-bold mb-5">Newsletter</h3>
           <p className="text-titan-secondary text-sm mb-4">Subscribe for discount alerts, nutrition tips, and class updates.</p>
-          <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); }}>
-            <input type="email" placeholder="Your Email" className="input-field flex-1 !py-2.5 text-sm" required />
-            <button type="submit" className="btn-primary !px-4">
-              <i className="fa-solid fa-paper-plane" />
-            </button>
-          </form>
+          {submitted ? (
+            <div className="text-green-400 text-sm py-2.5 px-3.5 bg-green-400/10 border border-green-400/20 rounded-xl flex items-center gap-2.5 animate-fade-in">
+              <i className="fa-solid fa-circle-check text-lg" />
+              <span>Thanks for subscribing!</span>
+            </div>
+          ) : (
+            <form className="flex gap-2" onSubmit={handleSubmit}>
+              <input
+                type="email"
+                placeholder="Your Email"
+                className="input-field flex-1 !py-2.5 text-sm"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <button type="submit" className="btn-primary !px-4">
+                <i className="fa-solid fa-paper-plane" />
+              </button>
+            </form>
+          )}
         </div>
       </div>
 
