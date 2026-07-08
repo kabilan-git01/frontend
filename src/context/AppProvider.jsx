@@ -98,15 +98,19 @@ export function AppProvider({ children }) {
           role: role
         });
       } else {
-        // Mock Admin Fallback Check
+        // Mock Session Fallback Check
         const localAuthRaw = localStorage.getItem(STORAGE_KEYS.AUTH);
         if (localAuthRaw) {
           try {
             const localAuth = JSON.parse(localAuthRaw);
-            if (localAuth && localAuth.isAuthenticated && localAuth.user?.email === 'admin@titan.com') {
-              setAuth(localAuth);
-              setAuthLoading(false);
-              return;
+            if (localAuth && localAuth.isAuthenticated) {
+              const isMockAdmin = localAuth.user?.email === 'admin@titan.com';
+              const isMockMember = members.some((m) => m.email.toLowerCase() === localAuth.user?.email?.toLowerCase());
+              if (isMockAdmin || isMockMember) {
+                setAuth(localAuth);
+                setAuthLoading(false);
+                return;
+              }
             }
           } catch (e) {
             console.error('Error parsing local auth:', e);
@@ -132,15 +136,19 @@ export function AppProvider({ children }) {
           role: role
         });
       } else {
-        // Mock Admin Fallback Check
+        // Mock Session Fallback Check
         const localAuthRaw = localStorage.getItem(STORAGE_KEYS.AUTH);
         if (localAuthRaw) {
           try {
             const localAuth = JSON.parse(localAuthRaw);
-            if (localAuth && localAuth.isAuthenticated && localAuth.user?.email === 'admin@titan.com') {
-              setAuthLoading(false);
-              // Stay logged in as admin
-              return;
+            if (localAuth && localAuth.isAuthenticated) {
+              const isMockAdmin = localAuth.user?.email === 'admin@titan.com';
+              const isMockMember = members.some((m) => m.email.toLowerCase() === localAuth.user?.email?.toLowerCase());
+              if (isMockAdmin || isMockMember) {
+                setAuthLoading(false);
+                // Stay logged in as mock user
+                return;
+              }
             }
           } catch (e) {
             console.error('Error parsing local auth:', e);
@@ -154,7 +162,7 @@ export function AppProvider({ children }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [setAuth]);
+  }, [setAuth, members]);
 
   // Sync with Supabase on mount
   useEffect(() => {
@@ -385,8 +393,15 @@ export function AppProvider({ children }) {
         // Local Fallback for Demo Admin Account
         if (email === 'admin@titan.com' && password === 'admin123') {
           const user = { id: 'admin-1', name: 'Admin', email, role: 'admin' };
-          setAuth({ user, isAuthenticated: true, role: 'admin', loading: false });
+          setAuth({ user, isAuthenticated: true, role: 'admin' });
           return { success: true, role: 'admin' };
+        }
+        // Local Fallback for existing seed members
+        const foundMember = members.find((m) => m.email.toLowerCase() === email.toLowerCase());
+        if (foundMember) {
+          const user = { id: foundMember.id, name: foundMember.name, email, role: 'member' };
+          setAuth({ user, isAuthenticated: true, role: 'member' });
+          return { success: true, role: 'member' };
         }
         return { success: false, error: error.message };
       }
@@ -400,20 +415,26 @@ export function AppProvider({ children }) {
           role: role
         },
         isAuthenticated: true,
-        role: role,
-        loading: false
+        role: role
       });
       return { success: true, role };
     } catch (err) {
       // Local Fallback for Demo Admin Account
       if (email === 'admin@titan.com' && password === 'admin123') {
         const user = { id: 'admin-1', name: 'Admin', email, role: 'admin' };
-        setAuth({ user, isAuthenticated: true, role: 'admin', loading: false });
+        setAuth({ user, isAuthenticated: true, role: 'admin' });
         return { success: true, role: 'admin' };
+      }
+      // Local Fallback for existing seed members
+      const foundMember = members.find((m) => m.email.toLowerCase() === email.toLowerCase());
+      if (foundMember) {
+        const user = { id: foundMember.id, name: foundMember.name, email, role: 'member' };
+        setAuth({ user, isAuthenticated: true, role: 'member' });
+        return { success: true, role: 'member' };
       }
       return { success: false, error: err.message };
     }
-  }, [setAuth]);
+  }, [setAuth, members]);
 
   const logout = useCallback(async () => {
     try {

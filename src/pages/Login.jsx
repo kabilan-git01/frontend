@@ -16,9 +16,13 @@ export default function Login() {
 
   useEffect(() => {
     if (auth.isAuthenticated) {
-      navigate(from, { replace: true });
+      if (from === "/") {
+        navigate(auth.role === 'admin' ? '/admin' : '/', { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     }
-  }, [auth.isAuthenticated, navigate, from]);
+  }, [auth.isAuthenticated, navigate, from, auth.role]);
 
   if (auth.isAuthenticated) return null;
 
@@ -31,7 +35,11 @@ export default function Login() {
     setLoading(false);
 
     if (result.success) {
-      navigate(from, { replace: true });
+      if (from === "/") {
+        navigate(result.role === 'admin' ? '/admin' : '/', { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     } else {
       setError(result.error || 'Invalid email or password');
     }
